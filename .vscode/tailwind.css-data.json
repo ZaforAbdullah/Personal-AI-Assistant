@@ -1,0 +1,55 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@theme",
+      "description": "Tailwind CSS v4: declares design tokens (colors, fonts, spacing…) that become utility classes. `@theme inline` references the variables by name instead of copying their values.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/theme" }]
+    },
+    {
+      "name": "@source",
+      "description": "Tailwind CSS v4: adds a path to scan for class names.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/detecting-classes-in-source-files" }]
+    },
+    {
+      "name": "@utility",
+      "description": "Tailwind CSS v4: defines a custom utility class.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-utilities" }]
+    },
+    {
+      "name": "@variant",
+      "description": "Tailwind CSS v4: applies a variant (hover, dark, …) inside plain CSS.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/adding-custom-styles#using-variants" }]
+    },
+    {
+      "name": "@custom-variant",
+      "description": "Tailwind CSS v4: defines a new variant.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/adding-custom-styles#adding-custom-variants" }]
+    },
+    {
+      "name": "@apply",
+      "description": "Tailwind CSS: inlines utility classes into a CSS rule.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/functions-and-directives#apply-directive" }]
+    },
+    {
+      "name": "@reference",
+      "description": "Tailwind CSS v4: makes theme variables and utilities available in a separate CSS file (e.g. CSS modules) without emitting them.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/functions-and-directives#reference-directive" }]
+    },
+    {
+      "name": "@config",
+      "description": "Tailwind CSS v4: loads a legacy JavaScript config file.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/functions-and-directives#config-directive" }]
+    },
+    {
+      "name": "@plugin",
+      "description": "Tailwind CSS v4: loads a JavaScript plugin.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/functions-and-directives#plugin-directive" }]
+    },
+    {
+      "name": "@tailwind",
+      "description": "Tailwind CSS (v3 style): injects base, components or utilities.",
+      "references": [{ "name": "Tailwind docs", "url": "https://tailwindcss.com/docs/functions-and-directives#tailwind-directive" }]
+    }
+  ]
+}

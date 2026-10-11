@@ -1,0 +1,57 @@
+name: personal-ai-assistant
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: assistant
+      POSTGRES_PASSWORD: assistant
+      POSTGRES_DB: assistant
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U assistant -d assistant"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      # Optional: without it the LM Studio defaults apply (see .env.example).
+      - path: .env
+        required: false
+    environment:
+      # Inside the compose network the database host is the service name, and the
+      # host machine (where LM Studio runs) is host.docker.internal.
+      DATABASE_URL: postgresql+asyncpg://assistant:assistant@db:5432/assistant
+      LMSTUDIO_BASE_URL: ${LMSTUDIO_BASE_URL_DOCKER:-http://host.docker.internal:1234/v1}
+      # CORS: the backend only accepts browser calls from the frontend's published port.
+      FRONTEND_PORT: ${FRONTEND_PORT:-3000}
+    # Must outlast uvicorn's --timeout-graceful-shutdown (5s) plus the lifespan shutdown.
+    stop_grace_period: 15s
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

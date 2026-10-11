@@ -1,0 +1,19 @@
+{
+  // Tailwind CSS v4 at-rules (@theme, @source, @utility, …) are unknown to VS Code's
+  // built-in CSS language service; this tells it what they are so globals.css lints clean.
+  // The Tailwind CSS IntelliSense extension (see extensions.json) adds completions on top.
+  "css.customData": [".vscode/tailwind.css-data.json"],
+  "css.lint.unknownAtRules": "ignore",
+  "sqltools.connections": [
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "assistant",
+      "database": "assistant",
+      "username": "assistant"
+    }
+  ]
+}

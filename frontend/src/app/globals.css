@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+/* Design tokens: brand blue (#4060F8), mint / coral / peach accents, cool grey neutrals.
+   Surfaces are CSS variables, so dark mode only swaps values. */
+:root {
+  --canvas: #f6f7fb;
+  --surface: #ffffff;
+  --surface-2: #eef0f6;
+  --border: #e3e6ef;
+  --text: #1b1d2a;
+  --muted: #6b7084;
+  --user-bubble: #4060f8;
+  --user-bubble-text: #ffffff;
+  --shadow: 0 1px 2px rgb(27 29 42 / 0.05), 0 8px 24px -12px rgb(64 96 248 / 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #0f1117;
+    --surface: #171a23;
+    --surface-2: #1f2330;
+    --border: #2a2f3d;
+    --text: #eceef5;
+    --muted: #9aa0b4;
+    --user-bubble: #4f6ef9;
+    --user-bubble-text: #ffffff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  }
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-user-bubble: var(--user-bubble);
+  --color-user-bubble-text: var(--user-bubble-text);
+
+  --color-brand-50: #eef1ff;
+  --color-brand-100: #dde3fe;
+  --color-brand-200: #bac6fd;
+  --color-brand-300: #8fa3fb;
+  --color-brand-400: #6f8afb;
+  --color-brand-500: #4f6ef9;
+  --color-brand-600: #4060f8;
+  --color-brand-700: #3049d6;
+  --color-brand-800: #2536a8;
+
+  --color-mint-100: #dfeee8;
+  --color-mint-300: #a8d0c0;
+  --color-mint-600: #3f9a7f;
+  --color-coral-100: #fbe6df;
+  --color-coral-300: #f0c0b0;
+  --color-coral-500: #d87860;
+  --color-coral-700: #b2513b;
+  --color-peach-100: #f9e7e2;
+
+  --shadow-soft: var(--shadow);
+  --radius-xl2: 1.25rem;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--text);
+  /* System fonts: no network fetch at build time, so the Docker build is hermetic. */
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A quiet scrollbar; the chat pane scrolls edge to edge so this sits at the window edge. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--muted) 35%, transparent) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted) 35%, transparent);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Rendered Markdown inside assistant replies. */
+.md > :first-child {
+  margin-top: 0;
+}
+.md > :last-child {
+  margin-bottom: 0;
+}
+.md p {
+  margin: 0.5em 0;
+  white-space: pre-wrap;
+}
+.md ul,
+.md ol {
+  margin: 0.5em 0;
+  padding-left: 1.4em;
+}
+.md ul {
+  list-style: disc;
+}
+.md ol {
+  list-style: decimal;
+}
+.md li {
+  margin: 0.15em 0;
+}
+.md li > p {
+  margin: 0;
+}
+.md strong {
+  font-weight: 600;
+}
+.md h1,
+.md h2,
+.md h3,
+.md h4 {
+  margin: 0.8em 0 0.3em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.md h1 {
+  font-size: 1.15em;
+}
+.md h2 {
+  font-size: 1.1em;
+}
+.md h3,
+.md h4 {
+  font-size: 1em;
+}
+.md code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--surface-2);
+  border-radius: 0.35rem;
+  padding: 0.1em 0.35em;
+}
+.md pre {
+  margin: 0.6em 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.75rem;
+  background: var(--surface-2);
+  overflow-x: auto;
+}
+.md pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85em;
+}
+.md blockquote {
+  margin: 0.5em 0;
+  padding-left: 0.9em;
+  border-left: 3px solid var(--border);
+  color: var(--muted);
+}
+.md a {
+  color: #4060f8;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.md table {
+  margin: 0.6em 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.md th,
+.md td {
+  border: 1px solid var(--border);
+  padding: 0.3em 0.6em;
+  text-align: left;
+}
+.md hr {
+  margin: 0.8em 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+@keyframes caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+.caret {
+  animation: caret 1s ease-in-out infinite;
+}
+
+@keyframes dot {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+.dot {
+  animation: dot 1.2s ease-in-out infinite;
+}
+.dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0.3s;
+}

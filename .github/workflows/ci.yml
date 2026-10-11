@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    name: backend (pytest, ruff)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      # Lets the Postgres/pgvector integration tests run; every other test is offline.
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: assistant
+          POSTGRES_PASSWORD: assistant
+          POSTGRES_DB: assistant
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U assistant -d assistant"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+asyncpg://assistant:assistant@localhost:5432/assistant
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: pip install -e '.[dev]'
+      - run: ruff check app tests
+      - run: ruff format --check app tests
+      # Offline: scripted chat model + in-memory storage, no keys, no network.
+      - run: pytest -q
+      # Leak guard: a few hundred full rounds against the real app; fails if memory,
+      # tasks or generators keep growing (see backend/scripts/soak.py).
+      - run: python -m scripts.soak --rounds 300
+
+  frontend:
+    name: frontend (vitest, lint, typecheck, build)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm build
+
+  docker:
+    name: docker images build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -f backend/Dockerfile .
+      - run: docker build -f frontend/Dockerfile .
