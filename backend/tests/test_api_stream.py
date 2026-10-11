@@ -242,6 +242,14 @@ async def test_health(settings: Settings) -> None:
     assert body["tools"] == ["calculator", "knowledge_search", "weather"]
 
 
+async def test_health_answers_head_for_uptime_probes(settings: Settings) -> None:
+    app, client = await make_client(settings, ScriptedChatModel(turns=[]))
+    async with app.router.lifespan_context(app), client:
+        resp = await client.head("/health")
+    assert resp.status_code == 200
+    assert resp.content == b""
+
+
 async def test_openapi_documents_the_stream_and_the_health_shape(settings: Settings) -> None:
     app, client = await make_client(settings, ScriptedChatModel(turns=[]))
     async with app.router.lifespan_context(app), client:

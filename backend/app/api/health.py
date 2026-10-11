@@ -46,8 +46,11 @@ async def root() -> RootOut:
     return RootOut(service="personal-ai-assistant", docs="/docs", health="/health")
 
 
-@router.get(
-    "/health", summary="Liveness, provider, tools and cache stats", response_model=HealthOut
+@router.api_route(
+    "/health",
+    methods=["GET", "HEAD"],
+    summary="Liveness, provider, tools and cache stats",
+    response_model=HealthOut,
 )
 async def health(
     settings: Annotated[Settings, Depends(get_settings_dep)],
